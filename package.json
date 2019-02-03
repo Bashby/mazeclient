@@ -1,0 +1,46 @@
+{
+  "name": "mazeclient",
+  "version": "0.1.0",
+  "description": "Browser client for maze game concept",
+  "main": "./src/client.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build",
+    "build": "rimraf dist && parcel build -d dist ./static/index.html",
+    "dev": "rimraf dist &&  parcel serve -p 8080 --hmr-port 8081 ./static/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bashby/mazeclient.git"
+  },
+  "keywords": [
+    "maze",
+    "browser",
+    "client",
+    "typescript",
+    "node",
+    "docker"
+  ],
+  "author": "bashby",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Bashby/mazeclient/issues"
+  },
+  "homepage": "https://github.com/Bashby/mazeclient#readme",
+  "devDependencies": {
+    "@types/howler": "^2.0.5",
+    "@types/lodash": "^4.14.120",
+    "@types/mainloop.js": "^1.0.5",
+    "parcel-bundler": "^1.11.0",
+    "rimraf": "^2.6.3",
+    "sass": "^1.16.1",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.1"
+  },
+  "dependencies": {
+    "howler": "^2.1.1",
+    "lodash": "^4.17.11",
+    "mainloop.js": "^1.0.4",
+    "normalize.css": "^8.0.1"
+  }
+}
