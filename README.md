@@ -4,21 +4,29 @@ Browser client for maze game concept.
 
 # Getting started
 
-We use [parcel](https://parceljs.org/) for development.
+## Dependencies
 
-## Docker
+You need [node](https://nodejs.org/en/) and optionally [docker](https://www.docker.com/products/docker-desktop).
+
+## Building
+
+### Docker
 
 > **Note**: Run `docker network create maze-network` on first run.
 
 `docker-compose up --build maze-client`
 
-## Local
+### Local
 
 `npm install`
 
 `npm run dev`
 
-Then, navigate to `http://localhost:8080` in your browser.
+## Interacting
+
+Navigate to `http://localhost:8080` in your browser.
+
+We use [parcel](https://parceljs.org/) during development for hot-relading.
 
 # Building
 
