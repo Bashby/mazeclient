@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-import { COMPUTE_FACTOR } from '../lib/constants';
+import { APP_NAME, APP_VERSION, COMPUTE_FACTOR } from '../lib/constants';
+import { Debug } from '../lib/debug';
 import logger from '../lib/logger';
 import Input from './input';
 import Loop from './loop';
@@ -8,6 +9,7 @@ import { createFollower, IGameObject } from './object';
 import Renderer from './renderer';
 
 export default class Game {
+	private debug?: Debug;
 	private loop: Loop;
 	private input: Input;
 	private renderer: Renderer;
@@ -26,17 +28,17 @@ export default class Game {
 		});
 
 		if (process.env.DEBUG) {
-			this.debug();
+			this.initDebug();
 		}
 	}
 
 	public start() {
-		logger.info('Starting...');
+		logger.debug(`Starting '${APP_NAME}' v${APP_VERSION}...`);
 		this.loop.start();
 	}
 
 	public stop() {
-		logger.info('Stopping...');
+		logger.debug('Stopping...');
 		this.loop.stop();
 	}
 
@@ -44,8 +46,11 @@ export default class Game {
 		return this.renderer.stage;
 	}
 
-	private debug() {
-		this.objects.push(createFollower(this));
+	private initDebug() {
+		this.debug = new Debug();
+		const follower = createFollower(this);
+		this.debug.track(follower);
+		this.objects.push(follower);
 	}
 
 	private handleInput() {

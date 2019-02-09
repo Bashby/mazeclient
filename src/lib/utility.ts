@@ -1,8 +1,6 @@
 import { vec2 } from 'gl-matrix';
 
-const HALF_ANGLE = Math.PI;
-const WHOLE_ANGLE = Math.PI * 2;
-const ONE_AND_HALF_ANGLE = WHOLE_ANGLE + HALF_ANGLE;
+import { HALF_ANGLE, ONE_AND_HALF_ANGLE, WHOLE_ANGLE } from './constants';
 
 // Return angle from point A to point B, in radians
 export function angleOf(a: vec2, b: vec2): number {

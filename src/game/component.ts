@@ -15,3 +15,9 @@ export interface IGraphicsComponent {
 export interface IPhysicsComponent {
 	// TODO: Try collison next!
 }
+
+export interface IDebugComponent {
+	// TODO: A system for registering with the debugger, each item knowing what it can and should register
+	register(): void;
+	deregister(): void;
+}
