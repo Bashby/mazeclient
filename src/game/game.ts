@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
+import { COMPUTE_FACTOR } from '../lib/constants';
 import logger from '../lib/logger';
 import Input from './input';
 import Loop from './loop';
-import { IGameObject } from './object';
-import { create as createFollower } from './object/follower';
+import { createFollower, IGameObject } from './object';
 import Renderer from './renderer';
 
 export default class Game {
@@ -83,7 +83,7 @@ export default class Game {
 
 	private readonly update = (delta: number) => {
 		_.each(this.activeObjects, (object) =>
-			object.update(delta, this.input.curState),
+			object.update(delta * COMPUTE_FACTOR, this.input.curState),
 		);
 	}
 }

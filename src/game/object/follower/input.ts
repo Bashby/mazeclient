@@ -1,37 +1,36 @@
+import { vec2 } from 'gl-matrix';
 import _ from 'lodash';
 
-import {
-	add,
-	multiplyByScalar,
-	normalize,
-	subtract,
-} from '../../../lib/vector';
+import { angleOf } from '../../../lib/utility';
 import { IInputComponent } from '../../component';
 import { IInput } from '../../input';
-import { IGameObject } from '../../object';
+import { IGameObject } from '../object';
 
 export default class FollowerInput implements IInputComponent {
-	private baseSpeed = 0.1;
-	private maxSpeed = 5;
-	private sprintModifier = 1.5;
+	private baseSpeed = 5;
+	private maxSpeed = 15;
+	private sprintModifier = 2.0;
 
 	public update(object: IGameObject, input: IInput, delta: number): void {
 		// Snapshot state
 		object.lastPos = object.pos;
 		object.lastRotation = object.rotation;
 
-		const direction = subtract(input.mouse.pos, object.pos);
-		const directionNormalized = normalize(direction);
+		// Compute state
+		const direction = vec2.subtract(vec2.create(), input.mouse.pos, object.pos);
+		const directionNormalized = vec2.normalize(vec2.create(), direction);
 		const rawSpeed = this.baseSpeed * (input.shift ? this.sprintModifier : 1);
 		const speed = _.clamp(rawSpeed, 0, this.maxSpeed);
 
-		// Position
-		object.pos = add(
+		// Update position
+		object.pos = vec2.scaleAndAdd(
+			vec2.create(),
 			object.pos,
-			multiplyByScalar(directionNormalized, speed * delta),
+			directionNormalized,
+			speed * delta,
 		);
 
-		// Rotation
-		object.rotation = Math.atan2(direction.y, direction.x);
+		// Update rotation
+		object.rotation = angleOf(object.pos, input.mouse.pos);
 	}
 }

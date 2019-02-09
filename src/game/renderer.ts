@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import * as Pixi from 'pixi.js';
-import { CANVAS_ID, TARGET_HEIGHT, TARGET_WIDTH } from '../lib/constant';
+
+import { CANVAS_ID, TARGET_HEIGHT, TARGET_WIDTH } from '../lib/constants';
 
 export default class Renderer {
 	public stage: PIXI.Container = new Pixi.Container();
@@ -24,9 +25,6 @@ export default class Renderer {
 			width: TARGET_WIDTH,
 			height: TARGET_HEIGHT,
 			backgroundColor: 0x0fafaf,
-			transparent: false,
-			resolution: 1,
-			// roundPixels: true,
 		});
 
 		// Bind resize events for renderer

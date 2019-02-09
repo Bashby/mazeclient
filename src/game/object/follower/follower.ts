@@ -1,5 +1,5 @@
 import Game from '../../game';
-import { GameObject, IGameObject } from '../../object';
+import { GameObject, IGameObject } from '../object';
 import FollowerGraphics from './graphics';
 import FollowerInput from './input';
 

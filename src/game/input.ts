@@ -1,23 +1,13 @@
+import { vec2 } from 'gl-matrix';
 import Mousetrap from 'mousetrap';
-import { CANVAS_ID } from '../lib/constant';
-import logger from '../lib/logger';
+
+import { CANVAS_ID } from '../lib/constants';
 
 const LEFT_MOUSE_BUTTON = 0;
 const RIGHT_MOUSE_BUTTON = 2;
 
-export interface IDirectionVector {
-	x: DirectionVectorValue;
-	y: DirectionVectorValue;
-}
-
-export enum DirectionVectorValue {
-	Position = 1,
-	Negative = -1,
-	Zero = 0,
-}
-
 export interface IMouseState {
-	pos: { x: number; y: number };
+	pos: vec2;
 	left: boolean;
 	right: boolean;
 }
@@ -28,34 +18,59 @@ export interface IInput {
 	up: boolean;
 	down: boolean;
 	shift: boolean;
-	direction: IDirectionVector;
+	space: boolean;
+	one: boolean;
+	two: boolean;
+	three: boolean;
+	four: boolean;
+	five: boolean;
+	direction: vec2;
 	mouse: IMouseState;
 }
 
 export default class Input {
 	public curState: IInput;
+
 	private canvas = document.getElementById(CANVAS_ID);
 	private left: boolean = false;
 	private right: boolean = false;
 	private up: boolean = false;
 	private down: boolean = false;
 	private shift: boolean = false;
-	private mousePos: { x: number; y: number } = { x: 0, y: 0 };
+	private space: boolean = false;
+	private one: boolean = false;
+	private two: boolean = false;
+	private three: boolean = false;
+	private four: boolean = false;
+	private five: boolean = false;
+	private mousePos: vec2 = vec2.create();
 	private mouseLeft: boolean = false;
 	private mouseRight: boolean = false;
 
 	constructor() {
 		// Bind keys
-		Mousetrap.bind(['a', 'left'], this.onLeftPress, 'keydown');
-		Mousetrap.bind(['a', 'left'], this.onLeftRelease, 'keyup');
-		Mousetrap.bind(['d', 'right'], this.onRightPress, 'keydown');
-		Mousetrap.bind(['d', 'right'], this.onRightRelease, 'keyup');
 		Mousetrap.bind(['w', 'up'], this.onUpPress, 'keydown');
 		Mousetrap.bind(['w', 'up'], this.onUpRelease, 'keyup');
+		Mousetrap.bind(['a', 'left'], this.onLeftPress, 'keydown');
+		Mousetrap.bind(['a', 'left'], this.onLeftRelease, 'keyup');
 		Mousetrap.bind(['s', 'down'], this.onDownPress, 'keydown');
 		Mousetrap.bind(['s', 'down'], this.onDownRelease, 'keyup');
+		Mousetrap.bind(['d', 'right'], this.onRightPress, 'keydown');
+		Mousetrap.bind(['d', 'right'], this.onRightRelease, 'keyup');
 		Mousetrap.bind('shift', this.onShiftPress, 'keydown');
 		Mousetrap.bind('shift', this.onShiftRelease, 'keyup');
+		Mousetrap.bind('space', this.onSpacePress, 'keydown');
+		Mousetrap.bind('space', this.onSpaceRelease, 'keyup');
+		Mousetrap.bind('1', this.onOnePress, 'keydown');
+		Mousetrap.bind('1', this.onOneRelease, 'keyup');
+		Mousetrap.bind('2', this.onTwoPress, 'keydown');
+		Mousetrap.bind('2', this.onTwoRelease, 'keyup');
+		Mousetrap.bind('3', this.onThreePress, 'keydown');
+		Mousetrap.bind('3', this.onThreeRelease, 'keyup');
+		Mousetrap.bind('4', this.onFourPress, 'keydown');
+		Mousetrap.bind('4', this.onFourRelease, 'keyup');
+		Mousetrap.bind('5', this.onFivePress, 'keydown');
+		Mousetrap.bind('5', this.onFiveRelease, 'keyup');
 
 		// Bind mouse
 		if (this.canvas) {
@@ -75,6 +90,12 @@ export default class Input {
 			up: this.up,
 			down: this.down,
 			shift: this.shift,
+			space: this.space,
+			one: this.one,
+			two: this.two,
+			three: this.three,
+			four: this.four,
+			five: this.five,
 			direction: this.getDirection(),
 			mouse: this.getMouse(),
 		};
@@ -99,7 +120,7 @@ export default class Input {
 	}
 
 	private readonly onMouseMove = (event: MouseEvent) => {
-		this.mousePos = { x: event.clientX, y: event.clientY };
+		this.mousePos = vec2.fromValues(event.clientX, event.clientY);
 	}
 
 	private readonly onLeftPress = (): void => {
@@ -142,6 +163,54 @@ export default class Input {
 		this.shift = false;
 	}
 
+	private readonly onSpacePress = (): void => {
+		this.space = true;
+	}
+
+	private readonly onSpaceRelease = (): void => {
+		this.space = false;
+	}
+
+	private readonly onOnePress = (): void => {
+		this.one = true;
+	}
+
+	private readonly onOneRelease = (): void => {
+		this.one = false;
+	}
+
+	private readonly onTwoPress = (): void => {
+		this.two = true;
+	}
+
+	private readonly onTwoRelease = (): void => {
+		this.two = false;
+	}
+
+	private readonly onThreePress = (): void => {
+		this.three = true;
+	}
+
+	private readonly onThreeRelease = (): void => {
+		this.three = false;
+	}
+
+	private readonly onFourPress = (): void => {
+		this.four = true;
+	}
+
+	private readonly onFourRelease = (): void => {
+		this.four = false;
+	}
+
+	private readonly onFivePress = (): void => {
+		this.five = true;
+	}
+
+	private readonly onFiveRelease = (): void => {
+		this.five = false;
+	}
+
 	private getMouse(): IMouseState {
 		return {
 			left: this.mouseLeft,
@@ -150,20 +219,20 @@ export default class Input {
 		};
 	}
 
-	private getDirection(): IDirectionVector {
-		const direction = { x: 0, y: 0 };
+	private getDirection(): vec2 {
+		const direction = vec2.create();
 
 		if (this.left) {
-			direction.x -= 1;
+			direction[0] -= 1;
 		}
 		if (this.right) {
-			direction.x += 1;
+			direction[0] += 1;
 		}
 		if (this.up) {
-			direction.y -= 1;
+			direction[1] -= 1;
 		}
 		if (this.down) {
-			direction.y += 1;
+			direction[1] += 1;
 		}
 
 		return direction;

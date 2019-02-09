@@ -1,9 +1,9 @@
+import { vec2 } from 'gl-matrix';
 import { v4 as uuidv4 } from 'uuid';
 
-import { IVector } from '../lib/vector';
-import { IGraphicsComponent, IInputComponent } from './component';
-import Game from './game';
-import { IInput } from './input';
+import { IGraphicsComponent, IInputComponent } from '../component';
+import Game from '../game';
+import { IInput } from '../input';
 
 export interface IGameObject {
 	id: string;
@@ -12,11 +12,11 @@ export interface IGameObject {
 	active: boolean;
 	dead: boolean;
 
-	pos: IVector;
-	lastPos: IVector;
+	pos: vec2;
+	lastPos: vec2;
 	rotation: number;
 	lastRotation: number;
-	velocity: IVector;
+	velocity: vec2;
 
 	update: (delta: number, input: IInput) => void;
 	draw: (interpolationPercentage: number) => void;
@@ -37,11 +37,11 @@ export class GameObject implements IGameObject {
 	public dead: boolean = false;
 
 	// Buffered state
-	public pos: IVector = { x: 0, y: 0 };
-	public lastPos: IVector = this.pos;
+	public pos: vec2 = vec2.create();
+	public lastPos: vec2 = this.pos;
 	public rotation: number = 0;
 	public lastRotation: number = this.rotation;
-	public velocity: IVector = { x: 0, y: 0 };
+	public velocity: vec2 = vec2.create();
 
 	// Components
 	private input?: IInputComponent;

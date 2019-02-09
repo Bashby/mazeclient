@@ -1,6 +1,8 @@
+import { vec2 } from 'gl-matrix';
 import bunny from '../../../../static/image/sprite/bunny.png';
+import { shortestRadian } from '../../../lib/utility';
 import { IGraphicsComponent } from '../../component';
-import { IGameObject } from '../../object';
+import { IGameObject } from '../object';
 
 export default class FollowerGraphics implements IGraphicsComponent {
 	public sprite: PIXI.Sprite;
@@ -19,18 +21,25 @@ export default class FollowerGraphics implements IGraphicsComponent {
 	}
 
 	public draw(object: IGameObject, interpolation: number): void {
-		// Position
-		this.sprite.x =
-			object.lastPos.x + (object.pos.x - object.lastPos.x) * interpolation;
-		this.sprite.y =
-			object.lastPos.y + (object.pos.y - object.lastPos.y) * interpolation;
+		// Interpolate position
+		const deltaPosition = vec2.subtract(
+			vec2.create(),
+			object.pos,
+			object.lastPos,
+		);
+		const newPosition = vec2.scaleAndAdd(
+			vec2.create(),
+			object.lastPos,
+			deltaPosition,
+			interpolation,
+		);
 
-		// Rotation
-		const negRot: boolean = object.rotation < 0;
-		const absRotation =
-			(Math.abs(object.rotation) - Math.abs(object.lastRotation)) *
-			interpolation;
-		this.sprite.rotation =
-			object.lastRotation + (negRot ? absRotation * -1 : absRotation);
+		// Interpolate rotation
+		const deltaRotation = shortestRadian(object.lastRotation, object.rotation);
+		const newRotation = object.lastRotation + deltaRotation * interpolation;
+
+		// Apply transforms
+		this.sprite.position = new PIXI.Point(...newPosition);
+		this.sprite.rotation = newRotation;
 	}
 }

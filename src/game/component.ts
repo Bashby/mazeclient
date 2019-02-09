@@ -1,5 +1,5 @@
 import { IInput } from './input';
-import { IGameObject } from './object';
+import { IGameObject } from './object/object';
 import { ISprite } from './sprite';
 
 export interface IInputComponent {

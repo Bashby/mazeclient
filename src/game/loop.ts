@@ -1,6 +1,6 @@
 import MainLoop from 'mainloop.js';
 
-import { FPS_ID, TARGET_FPS } from '../lib/constant';
+import { FPS_ID, TARGET_FPS } from '../lib/constants';
 import logger from '../lib/logger';
 
 interface ILoopArgs {

@@ -1,1 +1,1 @@
-export { create } from './follower';
+export { create as createFollower } from './follower';
