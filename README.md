@@ -26,7 +26,7 @@ You need [node](https://nodejs.org/en/) and optionally [docker](https://www.dock
 
 Navigate to `http://localhost:8080` in your browser.
 
-We use [parcel](https://parceljs.org/) during development for hot-relading.
+We use [parcel](https://parceljs.org/) during development for hot-reloading.
 
 # Building
 
