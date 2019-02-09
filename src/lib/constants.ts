@@ -18,3 +18,7 @@ export const EPSILON = 0.000001;
 export const HALF_ANGLE = Math.PI;
 export const WHOLE_ANGLE = Math.PI * 2;
 export const ONE_AND_HALF_ANGLE = WHOLE_ANGLE + HALF_ANGLE;
+
+// MISC
+// tslint:disable-next-line:no-empty
+export const NOOP = () => {};
