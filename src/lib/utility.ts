@@ -1,11 +1,10 @@
-import { vec2 } from 'gl-matrix';
-
 import { HALF_ANGLE, ONE_AND_HALF_ANGLE, WHOLE_ANGLE } from './constants';
+import { Vector } from './vector';
 
 // Return angle from point A to point B, in radians
-export function angleOf(a: vec2, b: vec2): number {
-	const delta = vec2.subtract(vec2.create(), a, b);
-	const radians = Math.atan2(delta[1], delta[0]);
+export function angleOf(a: Vector, b: Vector): number {
+	const delta = a.subtract(b);
+	const radians = Math.atan2(delta.vector[1], delta.vector[0]);
 	return radians < 0 ? WHOLE_ANGLE + radians : radians;
 }
 
@@ -15,5 +14,15 @@ export function shortestRadian(from: number, to: number): number {
 	return (
 		((((to - from) % WHOLE_ANGLE) + ONE_AND_HALF_ANGLE) % WHOLE_ANGLE) -
 		HALF_ANGLE
+	);
+}
+
+export function clampVector(vec: Vector, min: number, max: number): Vector {
+	const minVec2 = new Vector(min, min);
+	const maxVec2 = new Vector(max, max);
+	return vec2.min(
+		vec2.create(),
+		vec2.max(vec2.create(), vec, minVec2),
+		maxVec2,
 	);
 }

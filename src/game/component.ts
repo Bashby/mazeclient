@@ -1,3 +1,4 @@
+import { NOOP } from '../lib/constants';
 import { IInput } from './input';
 import { IGameObject } from './object/object';
 import { ISprite } from './sprite';
@@ -5,6 +6,15 @@ import { ISprite } from './sprite';
 export interface IComponent {
 	initialize(object: IGameObject): void;
 	deinitialize(object: IGameObject): void;
+}
+
+export class Component implements IComponent {
+	public initialize(object: IGameObject): void {
+		return;
+	}
+	public deinitialize(object: IGameObject): void {
+		return;
+	}
 }
 
 export interface IInputComponent extends IComponent {

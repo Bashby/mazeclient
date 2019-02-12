@@ -1,23 +1,27 @@
 import { vec2 } from 'gl-matrix';
+
 import bunny from '../../../../static/image/sprite/bunny.png';
 import { shortestRadian } from '../../../lib/utility';
-import { IGraphicsComponent } from '../../component';
+import { Component, IGraphicsComponent } from '../../component';
 import { IGameObject } from '../object';
 
-export default class FollowerGraphics implements IGraphicsComponent {
+export default class FollowerGraphics extends Component
+	implements IGraphicsComponent {
 	public sprite: PIXI.Sprite;
 
 	constructor() {
+		super();
+
 		this.sprite = PIXI.Sprite.fromImage(bunny);
 	}
 
-	public initialize(object: IGameObject, renderTarget: PIXI.Container): void {
-		renderTarget.addChild(this.sprite);
+	public initialize(object: IGameObject): void {
+		object.game.getStage().addChild(this.sprite);
 		this.sprite.anchor.set(0.5, 0.5);
 	}
 
-	public destroy(renderTarget: PIXI.Container): void {
-		renderTarget.removeChild(this.sprite);
+	public deinitialize(object: IGameObject): void {
+		object.game.getStage().removeChild(this.sprite);
 	}
 
 	public draw(object: IGameObject, interpolation: number): void {

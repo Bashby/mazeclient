@@ -6,8 +6,10 @@ import FollowerInput from './input';
 export function create(game: Game): IGameObject {
 	const follower = new GameObject({
 		game,
-		input: new FollowerInput(),
-		graphics: new FollowerGraphics(),
+		components: {
+			input: new FollowerInput(),
+			graphics: new FollowerGraphics(),
+		},
 	});
 
 	return follower;
