@@ -1,18 +1,16 @@
-import { vec2 } from 'gl-matrix';
 import _ from 'lodash';
 
-import { EPSILON } from '../../../lib/constants';
-import { angleOf, clampVec2 } from '../../../lib/utility';
+import { Vector } from '../../../lib/vector';
 import { Component, IInputComponent } from '../../component';
 import { IInput } from '../../input';
 import { IGameObject } from '../object';
 
 export default class FollowerInput extends Component
 	implements IInputComponent {
-	private velocity: vec2 = vec2.create();
-	private acceleration: vec2 = vec2.fromValues(0.1, 0.1);
-	private deceleration: vec2 = vec2.fromValues(0.3, 0.3);
-	private maxVelocity = 3;
+	private velocity: Vector = new Vector();
+	private acceleration: Vector = new Vector(0.3, 0.3);
+	private deceleration: Vector = new Vector(0.3, 0.3);
+	private maxVelocity = 2;
 	private sprintMultiplier = 2;
 
 	public update(object: IGameObject, input: IInput, delta: number): void {
@@ -20,79 +18,35 @@ export default class FollowerInput extends Component
 		object.lastPos = object.pos;
 		object.lastRotation = object.rotation;
 
-		// Direction
-		const distanceMagnitude = vec2.distance(object.pos, input.mouse.pos);
-		const distanceVector = vec2.subtract(
-			vec2.create(),
-			input.mouse.pos,
-			object.pos,
-		);
+		const distance = object.pos.distance(input.mouse.pos);
+		if (distance < 0.5) {
+			return;
+		}
 
-		const timeToSlowDown = vec2.scale(
-			vec2.create(),
-			this.velocity,
-			1 / this.acceleration[0],
-		);
-		console.log(timeToSlowDown);
-
-		const desiredDirectionNormalized = vec2.normalize(
-			vec2.create(),
-			distanceVector,
-		);
-		const currentDirection = vec2.fromValues(
+		const currentDirection = new Vector(
 			-Math.cos(object.rotation),
 			-Math.sin(object.rotation),
-		);
+		).normalize();
+		const desiredDirection = input.mouse.pos.subtract(object.pos).normalize();
+		const newDirection = currentDirection.lerp(desiredDirection, 0.8);
 
-		const newDirection = vec2.lerp(
-			vec2.create(),
-			currentDirection,
-			desiredDirectionNormalized,
-			0.1,
-		);
-
-		// let newSpeed;
-		// if (vec2.length(direction) < 5) {
-		// 	newSpeed = 1;
-		// } else {
-		// 	const speed =
-		// 		this.speed +
-		// 		this.minSpeed *
-		// 			this.acceleration *
-		// 			(input.shift ? this.sprintModifier : 1) *
-		// 			delta;
-		// 	newSpeed = _.clamp(speed, 0, this.maxSpeed);
-		// }
-
-		// Update velocity
-		// this.velocity = vec2.lerp(
-		// 	vec2.create(),
-		// 	this.velocity,
-		// 	directionNormalized,
-		// 	0.1,
-		// );
-		this.velocity = vec2.scaleAndAdd(
-			vec2.create(),
-			this.velocity,
-			this.acceleration,
-			delta,
-		);
-		this.velocity = clampVec2(
-			this.velocity,
-			-this.maxVelocity,
-			this.maxVelocity,
-		);
-		// console.log(currentDirection, newDirection, this.velocity);
+		const timeToSlowDown = this.velocity.divide(this.deceleration.scale(delta));
+		if (
+			this.velocity
+				.multiply(timeToSlowDown)
+				.scale(0.5)
+				.magnitude() >= distance
+		) {
+			this.velocity = this.velocity.subtract(this.deceleration.scale(delta));
+		} else {
+			this.velocity = this.velocity.add(this.acceleration.scale(delta));
+		}
 
 		// Update position
-		object.pos = vec2.scaleAndAdd(
-			vec2.create(),
-			object.pos,
-			newDirection,
-			vec2.length(this.velocity),
-		);
+		this.velocity = this.velocity.clamp(-this.maxVelocity, this.maxVelocity);
+		object.pos = object.pos.add(newDirection.scale(this.velocity.magnitude()));
 
 		// Update rotation
-		object.rotation = angleOf(object.pos, input.mouse.pos);
+		object.rotation = currentDirection.radiansTo(newDirection);
 	}
 }
