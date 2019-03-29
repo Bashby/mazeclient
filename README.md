@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="static\image\logo.png" width="450" height="150" title="Mazeclient Logo" style="border-radius: 5px;">
+</p>
+
 # mazeclient
 
 Browser client for maze game concept.
@@ -26,10 +30,10 @@ You need [node](https://nodejs.org/en/) and optionally [docker](https://www.dock
 
 Navigate to `http://localhost:8080` in your browser.
 
-We use [parcel](https://parceljs.org/) during development for hot-reloading.
+I use [parcel](https://parceljs.org/) during development for hot-reloading.
 
 # Building
 
-You can build the client for production.
+You can build the client for production. The output is in the `dist` folder.
 
 `npm run build`
