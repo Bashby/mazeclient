@@ -1,7 +1,7 @@
 import dat from 'dat.gui';
 
 import { IGameObject } from '../game/object';
-import { APP_NAME, DEBUG_ID, EPSILON, WHOLE_ANGLE } from './constants';
+import { APP_NAME, DEBUG_ID } from './constants';
 
 export class Debug {
 	private domTarget = document.getElementById(DEBUG_ID);
@@ -15,16 +15,19 @@ export class Debug {
 		}
 	}
 
-	public track(object: IGameObject): void {
+	public track(object: IGameObject, initOpen?: boolean): dat.GUI {
 		if (this.tracked[object.id]) {
-			return;
+			return this.tracked[object.id];
 		}
 
 		// Track
 		const objectFolder = this.gui.addFolder(object.id);
-		objectFolder.open();
 		this.tracked[object.id] = objectFolder;
-		objectFolder.add(object, 'rotation', 0, WHOLE_ANGLE, EPSILON).listen();
+		if (initOpen) {
+			objectFolder.open();
+		}
+
+		return objectFolder;
 	}
 
 	public untrack(object: IGameObject): void {

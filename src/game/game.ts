@@ -9,7 +9,7 @@ import { createFollower, IGameObject } from './object';
 import Renderer from './renderer';
 
 export default class Game {
-	private debug?: Debug;
+	private debug: Debug;
 	private loop: Loop;
 	private input: Input;
 	private renderer: Renderer;
@@ -26,10 +26,11 @@ export default class Game {
 			end: this.end,
 			update: this.update,
 		});
+		this.debug = new Debug();
 
-		if (process.env.DEBUG) {
-			this.initDebug();
-		}
+		// Create a follower
+		const follower = createFollower(this);
+		this.objects.push(follower);
 	}
 
 	public start() {
@@ -46,11 +47,8 @@ export default class Game {
 		return this.renderer.stage;
 	}
 
-	private initDebug() {
-		this.debug = new Debug();
-		const follower = createFollower(this);
-		this.debug.track(follower);
-		this.objects.push(follower);
+	public getDebug(): Debug {
+		return this.debug;
 	}
 
 	private handleInput() {

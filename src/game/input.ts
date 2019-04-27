@@ -1,13 +1,13 @@
-import { vec2 } from 'gl-matrix';
 import Mousetrap from 'mousetrap';
 
 import { CANVAS_ID } from '../lib/constants';
+import { Vector } from '../lib/vector';
 
 const LEFT_MOUSE_BUTTON = 0;
 const RIGHT_MOUSE_BUTTON = 2;
 
 export interface IMouseState {
-	pos: vec2;
+	pos: Vector;
 	left: boolean;
 	right: boolean;
 }
@@ -24,7 +24,7 @@ export interface IInput {
 	three: boolean;
 	four: boolean;
 	five: boolean;
-	direction: vec2;
+	direction: Vector;
 	mouse: IMouseState;
 }
 
@@ -43,7 +43,7 @@ export default class Input {
 	private three: boolean = false;
 	private four: boolean = false;
 	private five: boolean = false;
-	private mousePos: vec2 = vec2.create();
+	private mousePos: Vector = new Vector();
 	private mouseLeft: boolean = false;
 	private mouseRight: boolean = false;
 
@@ -120,7 +120,7 @@ export default class Input {
 	}
 
 	private readonly onMouseMove = (event: MouseEvent) => {
-		this.mousePos = vec2.fromValues(event.clientX, event.clientY);
+		this.mousePos = new Vector(event.clientX, event.clientY);
 	}
 
 	private readonly onLeftPress = (): void => {
@@ -219,20 +219,20 @@ export default class Input {
 		};
 	}
 
-	private getDirection(): vec2 {
-		const direction = vec2.create();
+	private getDirection(): Vector {
+		const direction = new Vector();
 
 		if (this.left) {
-			direction[0] -= 1;
+			direction.vector[0] -= 1;
 		}
 		if (this.right) {
-			direction[0] += 1;
+			direction.vector[0] += 1;
 		}
 		if (this.up) {
-			direction[1] -= 1;
+			direction.vector[1] -= 1;
 		}
 		if (this.down) {
-			direction[1] += 1;
+			direction.vector[1] += 1;
 		}
 
 		return direction;

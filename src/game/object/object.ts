@@ -1,13 +1,17 @@
-import { vec2 } from 'gl-matrix';
+import _ from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 
+import { Vector } from '../../lib/vector';
 import {
+	IComponent,
 	IDebugComponent,
 	IGraphicsComponent,
 	IInputComponent,
 } from '../component';
 import Game from '../game';
 import { IInput } from '../input';
+
+const GAME_OBJECT_COMPONENTS = ['input', 'graphics', 'debug'];
 
 export interface IGameObject {
 	id: string;
@@ -16,11 +20,11 @@ export interface IGameObject {
 	active: boolean;
 	dead: boolean;
 
-	pos: vec2;
-	lastPos: vec2;
+	position: Vector;
+	// lastPos: Vector;
 	rotation: number;
-	lastRotation: number;
-	velocity: vec2;
+	// lastRotation: number;
+	velocity: Vector;
 
 	update: (delta: number, input: IInput) => void;
 	draw: (interpolationPercentage: number) => void;
@@ -30,9 +34,14 @@ export interface IGameObject {
 
 export interface IGameObjectArgs {
 	game: Game;
-	input?: IInputComponent;
-	graphics?: IGraphicsComponent;
-	debug?: IDebugComponent;
+	position?: Vector;
+	rotation?: number;
+	velocity?: Vector;
+	components: {
+		input?: IInputComponent;
+		graphics?: IGraphicsComponent;
+		debug?: IDebugComponent;
+	};
 }
 
 export class GameObject implements IGameObject {
@@ -43,11 +52,11 @@ export class GameObject implements IGameObject {
 	public dead: boolean = false;
 
 	// Buffered state
-	public pos: vec2 = vec2.create();
-	public lastPos: vec2 = this.pos;
+	public position: Vector = new Vector();
+	// public lastPos: Vector = this.pos;
 	public rotation: number = 0;
-	public lastRotation: number = this.rotation;
-	public velocity: vec2 = vec2.create();
+	// public lastRotation: number = this.rotation;
+	public velocity: Vector = new Vector();
 
 	// Components
 	private input?: IInputComponent;
@@ -57,24 +66,32 @@ export class GameObject implements IGameObject {
 	constructor(args: IGameObjectArgs) {
 		this.game = args.game;
 
-		if (args.input) {
-			this.input = args.input;
-		}
-		if (args.graphics) {
-			this.graphics = args.graphics;
-			this.graphics.initialize(this, this.game.getStage());
-		}
+		// Parse optional starting state
+		this.position = args.position || this.position;
+		this.rotation = args.rotation || this.rotation;
+		this.velocity = args.velocity || this.velocity;
 
-		if (args.debug) {
-			this.debug = args.debug;
-			this.debug.register();
-		}
+		// Apply / init components
+		_.each(GAME_OBJECT_COMPONENTS, (componentIdentifier) => {
+			if (_.has(args.components, componentIdentifier)) {
+				const component: IComponent = _.get(
+					args.components,
+					componentIdentifier,
+				);
+				_.set(this, componentIdentifier, component);
+				component.initialize(this);
+			}
+		});
 	}
 
 	public destroy(): void {
-		if (this.debug) {
-			this.debug.deregister();
-		}
+		// De-init components
+		_.each(GAME_OBJECT_COMPONENTS, (componentIdentifier) => {
+			if (_.has(this, componentIdentifier)) {
+				const component: IComponent = _.get(this, componentIdentifier);
+				component.deinitialize(this);
+			}
+		});
 	}
 
 	public update(delta: number, input: IInput): void {
