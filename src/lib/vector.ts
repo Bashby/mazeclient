@@ -3,9 +3,13 @@ import { vec2 } from 'gl-matrix';
 import { WHOLE_ANGLE } from './constants';
 
 export class Vector {
+	public x: number;
+	public y: number;
 	public vector: vec2;
 
 	constructor(x: number = 0, y: number = 0) {
+		this.x = x;
+		this.y = y;
 		this.vector = vec2.fromValues(x, y);
 	}
 
@@ -13,20 +17,10 @@ export class Vector {
 		return `<Vector ${this.x} ${this.y}>`;
 	}
 
-	get x(): number {
-		return this.vector[0];
-	}
-
-	set x(value: number) {
-		this.vector[0] = value;
-	}
-
-	get y(): number {
-		return this.vector[1];
-	}
-
-	set y(value: number) {
-		this.vector[1] = value;
+	public set(other: Vector) {
+		this.vector = other.copy().vector;
+		this.x = this.vector[0];
+		this.y = this.vector[1];
 	}
 
 	public copy(): Vector {

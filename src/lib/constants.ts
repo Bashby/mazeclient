@@ -6,7 +6,7 @@ export const APP_VERSION = process.env.npm_package_version || 'unknown';
 export const CANVAS_ID = 'maze';
 export const FPS_ID = 'fps';
 export const DEBUG_ID = 'debug';
-export const TARGET_FPS = 75;
+export const TARGET_FPS = 60;
 export const TARGET_WIDTH = 1280;
 export const TARGET_HEIGHT = 720;
 

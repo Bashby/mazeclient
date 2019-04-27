@@ -1,7 +1,5 @@
-import { NOOP } from '../lib/constants';
 import { IInput } from './input';
 import { IGameObject } from './object/object';
-import { ISprite } from './sprite';
 
 export interface IComponent {
 	initialize(object: IGameObject): void;
@@ -22,7 +20,7 @@ export interface IInputComponent extends IComponent {
 }
 
 export interface IGraphicsComponent extends IComponent {
-	sprite: ISprite;
+	drawable: PIXI.Container;
 	draw(object: IGameObject, interpolation: number): void;
 }
 

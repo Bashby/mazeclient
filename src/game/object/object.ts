@@ -20,10 +20,10 @@ export interface IGameObject {
 	active: boolean;
 	dead: boolean;
 
-	pos: Vector;
-	lastPos: Vector;
+	position: Vector;
+	// lastPos: Vector;
 	rotation: number;
-	lastRotation: number;
+	// lastRotation: number;
 	velocity: Vector;
 
 	update: (delta: number, input: IInput) => void;
@@ -34,6 +34,9 @@ export interface IGameObject {
 
 export interface IGameObjectArgs {
 	game: Game;
+	position?: Vector;
+	rotation?: number;
+	velocity?: Vector;
 	components: {
 		input?: IInputComponent;
 		graphics?: IGraphicsComponent;
@@ -49,10 +52,10 @@ export class GameObject implements IGameObject {
 	public dead: boolean = false;
 
 	// Buffered state
-	public pos: Vector = new Vector();
-	public lastPos: Vector = this.pos;
+	public position: Vector = new Vector();
+	// public lastPos: Vector = this.pos;
 	public rotation: number = 0;
-	public lastRotation: number = this.rotation;
+	// public lastRotation: number = this.rotation;
 	public velocity: Vector = new Vector();
 
 	// Components
@@ -62,6 +65,11 @@ export class GameObject implements IGameObject {
 
 	constructor(args: IGameObjectArgs) {
 		this.game = args.game;
+
+		// Parse optional starting state
+		this.position = args.position || this.position;
+		this.rotation = args.rotation || this.rotation;
+		this.velocity = args.velocity || this.velocity;
 
 		// Apply / init components
 		_.each(GAME_OBJECT_COMPONENTS, (componentIdentifier) => {
